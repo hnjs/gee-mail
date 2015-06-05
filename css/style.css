@@ -1,0 +1,76 @@
+.container {
+	width: 850px;
+	border: 1px solid #ffffff;
+	padding: 0px;
+	font-family: avenir;
+}
+
+div#head {
+	background-color: #99FF88;
+	height: 50px;
+	width: 834px;
+	text-align: center;
+	margin-left: 8px;
+	margin-top: 8px;
+}
+
+div#head p {
+	position: relative;
+	top: 5px;
+	font-size: 30px;
+	margin: 0px;
+}
+
+div#main {
+	margin: 5px;
+}
+
+div#message {
+	background-color: #eeffff;
+	width: 834;
+	height: 150px;
+	margin-left: 8px;
+	overflow-y: auto;
+}
+
+#messageBody {
+	font-size: 15px;
+}
+
+tbody, thead {
+	display: block;
+}
+
+tbody {
+	height: 200px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+th, td {
+	height: 25px;
+	padding-left: 5px;
+	font-size: 15px;
+}
+
+th {
+	background-color: DarkOrange;
+	color: #ffffff;
+	text-align: left;
+}
+
+td {
+	background-color: #ffccaa;
+}
+
+.date {
+	width: 340;
+}
+
+.subject {
+	width: 310;
+}
+
+.sender {
+	width: 200;
+}

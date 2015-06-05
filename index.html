@@ -2,17 +2,136 @@
 	<head>
 		<script src="js/mail-generator.js"></script>
 		<link href="css/style.css" rel="stylesheet" media="screen">
-    <script>
-      window.onload = function(){
-        // ALL OF YOUR JAVASCRIPT CODE SHOULD GO HERE. 
-        // We have to use window.onload so your JavaScript doesn't execute until the page has loaded and all HTML has been downloaded to your browser
-        
-      };
-    </script>
+		<title>Gee-Mail !</title>
+    	<script>
+	    	window.onload = init;
+	    	
+	    	/*
+				Script execution starts here. Builds the table with initial data, define the events
+			*/
+			
+			function init(){
+				controller.init();
+				setInterval(controller.getNewEmail, 5000);
+			}
+			
+			/*
+				Helper functions for View
+			*/
+
+			function addCell(name, index, value){
+				var td = document.createElement('td');
+				td.setAttribute('id', name+index);
+				td.setAttribute('class', name);
+				td.innerHTML = value;
+				if (name === 'sender') {
+					td.addEventListener('click', controller.createMsgBody, false);
+//					td.addEventListener('mouseover', controller.highlight, false);
+//					td.addEventListener('mouseout', controller.highlight, false);
+				}
+				return td;
+
+			}
+
+			function addRow(row, index){
+				var tr = document.createElement('tr');
+				for (var key in row){
+					if (key === 'body') continue;
+					tr.appendChild(addCell(key, index, row[key]));
+				}
+		      	return tr;
+			}
+			
+			/*
+				View component of the MVC model. The UI operations are handled here
+			*/
+
+	      	var view = {
+	      		buildTable: function(isInit, newRow) {
+	      			var emailList = document.getElementById('emailListBody');
+	      			var emailCount = window.geemails.length;
+	      			if (isInit){
+		      			for (var i=0; i<emailCount; i++){
+		      				emailList.appendChild(addRow(geemails[i], i));
+		      			}
+	      			} else {
+	      				emailList.appendChild(addRow(newRow, geemails.length));
+	      			}
+	      		},
+	      		initialDisplay: function(){
+	      			view.buildTable(true);
+	      		},
+	      		displayNewEmail: function(newRow){
+	      			view.buildTable(false, newRow);
+	      		},
+	      		displayCount: function(){
+	      			var emailCount = window.geemails.length;
+	      			document.getElementById('count').innerHTML = emailCount + ((emailCount > 1) ? ' emails' : ' email');
+	      		},
+	      		displayMsgBody: function(msg){
+	      			var msgBody = document.getElementById('messageBody');
+	      			msgBody.innerHTML = msg;
+	      		}
+	      	};
+			
+			/*
+	      		Model component of the MVC model. Current state of the email page is handled here
+			*/
+
+	      	var model = {
+	      		createNewEmail: function(){
+	      			var newMsg = getNewMessage();
+	      			view.displayNewEmail(newMsg);
+	      			window.geemails.push(newMsg);
+	      		},
+	      		retrieveMsgBody: function(element){
+	      			var emailIndex = parseInt(element.id.slice(6));
+	      			return geemails[emailIndex].body;
+	      		}
+	      	};
+
+			/*
+	      		Controller component of the MVC model. Listens to the events and call appropriate model & view methods.
+			*/
+	      	
+	      	var controller = {
+	      		init: function(){
+	      			view.initialDisplay();
+					view.displayCount();
+	      		},
+	      		getNewEmail: function(){
+	      			model.createNewEmail();
+	      			view.displayCount();
+	      		},
+	      		createMsgBody: function(event){
+	      			var msg = model.retrieveMsgBody(event.target);
+	      			view.displayMsgBody(msg);
+	      		}
+	      	};
+   		</script>
 	</head>
 	<body>
-		<div class="container" id="main">
-			Build Me!
+		<div class="container" id="mainmain">
+			<div id='head'>
+				<p>Gee-Mail: You have <span id='count'></span></p>
+			</div>
+			<div id='main'>
+				<div id='mainbody'>
+					<table id='emailList'>
+						<thead id='emailListHead'>
+							<tr>
+								<th class='date'>Date</th>
+								<th class='subject'>Subject</th>
+								<th class='sender'>Sender</th>
+							</tr>
+						</thead>
+						<tbody id='emailListBody'></tbody>
+					</table>
+				</div>
+			</div>
+			<div id='message'>
+				<p id='messageBody'></p>
+			</div>
 		</div>
 	</body>
 </html>
