@@ -1,10 +1,17 @@
+<!--
+	Coder		: Harish Narayanan
+	Description	: Coding challenge from DevLeague.com
+	App name 	: Gee-mail
+	Github		: https://github.com/hnjs/gee-mail
+-->
+
 <html>
 	<head>
 		<script src="js/mail-generator.js"></script>
 		<link href="css/style.css" rel="stylesheet" media="screen">
 		<title>Gee-Mail !</title>
     	<script>
-	    	window.onload = init;
+	    	window.onload = init;													// All the code executes on window load
 	    	
 	    	/*
 				Script execution starts here. Builds the table with initial data, define the events
@@ -12,11 +19,13 @@
 			
 			function init(){
 				controller.init();
-				setInterval(controller.getNewEmail, 5000);
+				setInterval(controller.getNewEmail, 5000);							// New email will be fetched every 5 seconds
 			}
 			
 			/*
 				Helper functions for View
+				1. addCell - returns a td component with the value and the class & id attributes set
+				2. addRow  - returns a tr component with the cells appended and id attribute set, also adds event listener
 			*/
 
 			function addCell(name, index, value){
@@ -24,21 +33,18 @@
 				td.setAttribute('id', name+index);
 				td.setAttribute('class', name);
 				td.innerHTML = value;
-				if (name === 'sender') {
-					td.addEventListener('click', controller.createMsgBody, false);
-//					td.addEventListener('mouseover', controller.highlight, false);
-//					td.addEventListener('mouseout', controller.highlight, false);
-				}
 				return td;
 
 			}
 
 			function addRow(row, index){
 				var tr = document.createElement('tr');
+				tr.setAttribute('id', index);
 				for (var key in row){
 					if (key === 'body') continue;
 					tr.appendChild(addCell(key, index, row[key]));
 				}
+				tr.addEventListener('click', controller.createMsgBody, false);
 		      	return tr;
 			}
 			
@@ -49,24 +55,22 @@
 	      	var view = {
 	      		buildTable: function(isInit, newRow) {
 	      			var emailList = document.getElementById('emailListBody');
-	      			var emailCount = window.geemails.length;
 	      			if (isInit){
-		      			for (var i=0; i<emailCount; i++){
+		      			for (var i=0; i<model.emailCount; i++){
 		      				emailList.appendChild(addRow(geemails[i], i));
 		      			}
 	      			} else {
-	      				emailList.appendChild(addRow(newRow, geemails.length));
+	      				emailList.appendChild(addRow(newRow, model.emailCount));
 	      			}
 	      		},
-	      		initialDisplay: function(){
-	      			view.buildTable(true);
+	      		displayInit: function(){
+	      			this.buildTable(true);											// true denotes this is initial build
 	      		},
 	      		displayNewEmail: function(newRow){
-	      			view.buildTable(false, newRow);
+	      			this.buildTable(false, newRow);									// false denotes new row display
 	      		},
 	      		displayCount: function(){
-	      			var emailCount = window.geemails.length;
-	      			document.getElementById('count').innerHTML = emailCount + ((emailCount > 1) ? ' emails' : ' email');
+	      			document.getElementById('count').innerHTML = model.emailCount + ((model.emailCount > 1) ? ' emails' : ' email');
 	      		},
 	      		displayMsgBody: function(msg){
 	      			var msgBody = document.getElementById('messageBody');
@@ -79,13 +83,15 @@
 			*/
 
 	      	var model = {
+	      		emailCount: window.geemails.length,
 	      		createNewEmail: function(){
-	      			var newMsg = getNewMessage();
-	      			view.displayNewEmail(newMsg);
-	      			window.geemails.push(newMsg);
+	      			var newMsg = getNewMessage();									// call stub to get new message
+	      			view.displayNewEmail(newMsg);									// call the view to display the new message
+	      			window.geemails.push(newMsg);									// add the new email to the window variable
+	      			this.emailCount++;												// increment email count upon getting new email
 	      		},
 	      		retrieveMsgBody: function(element){
-	      			var emailIndex = parseInt(element.id.slice(6));
+	      			var emailIndex = parseInt(element.id.replace(/^\D+/g,'')); 		// extract digits from element id get email index
 	      			return geemails[emailIndex].body;
 	      		}
 	      	};
@@ -96,16 +102,16 @@
 	      	
 	      	var controller = {
 	      		init: function(){
-	      			view.initialDisplay();
-					view.displayCount();
+	      			view.displayInit();												// call view to build the initial table
+					view.displayCount();											// call view to display the view count
 	      		},
 	      		getNewEmail: function(){
-	      			model.createNewEmail();
-	      			view.displayCount();
+	      			model.createNewEmail();											// call model to get new email
+	      			view.displayCount();											// call view to display updated view count
 	      		},
 	      		createMsgBody: function(event){
-	      			var msg = model.retrieveMsgBody(event.target);
-	      			view.displayMsgBody(msg);
+	      			var msg = model.retrieveMsgBody(event.target);					// call model to fetch message the from row, clicked
+	      			view.displayMsgBody(msg);										// call the view display the message body
 	      		}
 	      	};
    		</script>

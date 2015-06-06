@@ -1,3 +1,11 @@
+/*
+	Coder		: Harish Narayanan
+	Description	: CSS code for Coding challenge from DevLeague.com
+	App name 	: Gee-mail
+	Github		: https://github.com/hnjs/gee-mail
+*/
+
+
 .container {
 	width: 850px;
 	border: 1px solid #ffffff;
@@ -35,6 +43,7 @@ div#message {
 
 #messageBody {
 	font-size: 15px;
+	margin-left: 5px;
 }
 
 tbody, thead {
@@ -45,6 +54,12 @@ tbody {
 	height: 200px;
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+
+tbody tr:hover {
+	cursor: pointer;
+	font-weight: bold;
+	font-style: italic;
 }
 
 th, td {
